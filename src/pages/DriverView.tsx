@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button, Chip, InputLabel, MenuItem, Select } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import styled from 'styled-components';
-import { Task } from '../components/Task';
+import { TaskCalendar } from '../components/TaskCalendar';
 
-enum TaskType {
+export enum TaskType {
   SEWER = 'Sewer',
   VAN = 'Van',
   TRASH = 'Trash',
@@ -11,24 +11,22 @@ enum TaskType {
 
 export const DriverView = () => {
   const [selectedTaskType, setSelectedTaskType] = React.useState<TaskType>(TaskType.TRASH);
-  // DO TABS
+  // const TabPanel = ({ value, children }: { value: TaskType; children: React.ReactNode }) =>
+  //   value === selectedTaskType ? <Box>{children}</Box> : null;
+
   return (
     <BaseContainer>
-      <InputLabel id='taskTypeSelect'>Task type</InputLabel>
-      <SelectTaskType
-        labelId='taskTypeSelect'
-        id='taskTypeSelect'
-        value={selectedTaskType}
-        label='Task type'
-        onChange={(e) => setSelectedTaskType(e.target.value as TaskType)}
-      >
-        <MenuItem value={TaskType.SEWER}>{TaskType.SEWER}</MenuItem>
-        <MenuItem value={TaskType.TRASH}>{TaskType.TRASH}</MenuItem>
-        <MenuItem value={TaskType.VAN}>{TaskType.VAN}</MenuItem>
-      </SelectTaskType>
-
-      <Task />
-      <Task />
+      <TabContainer>
+        <Tabs value={selectedTaskType} onChange={(_, newTabIndex) => setSelectedTaskType(newTabIndex)}>
+          <ScTab label={TaskType.SEWER} value={TaskType.SEWER} />
+          <ScTab label={TaskType.TRASH} value={TaskType.TRASH} />
+          <ScTab label={TaskType.VAN} value={TaskType.VAN} />
+        </Tabs>
+      </TabContainer>
+      <TaskCalendar taskType={selectedTaskType}></TaskCalendar>
+      {/* <TabPanel value={TaskType.SEWER}>Item One</TabPanel>
+      <TabPanel value={TaskType.TRASH}>Item Two</TabPanel>
+      <TabPanel value={TaskType.VAN}>Item Three</TabPanel> */}
     </BaseContainer>
   );
 };
@@ -40,6 +38,10 @@ const BaseContainer = styled.div`
   width: 100%;
 `;
 
-const SelectTaskType = styled(Select)`
-  width: 300px;
+const TabContainer = styled(Box)`
+  border-bottom: 1px solid lightgrey;
+`;
+
+const ScTab = styled(Tab)`
+  width: 20%;
 `;
