@@ -1,0 +1,55 @@
+{
+  "name": "task-manager-fe",
+  "version": "1.0.0",
+  "description": "Learning and exploring backend world",
+  "main": "app.ts",
+  "scripts": {
+    "start": "node src/app.ts",
+    "start:dev": "nodemon",
+    "lint": "eslint . --ext .ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generateTypes": "prisma generate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hugolainen/GigManagerBE.git"
+  },
+  "keywords": [],
+  "author": "Hugo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Hugolainen/GigManagerBE/issues"
+  },
+  "homepage": "https://github.com/Hugolainen/GigManagerBE#readme",
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/express-pino-logger": "^4.0.3",
+    "@types/http-errors": "^1.8.2",
+    "@types/node": "^18.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.28.0",
+    "@typescript-eslint/parser": "^5.28.0",
+    "eslint": "^8.17.0",
+    "eslint-config-node": "^4.1.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "nodemon": "^2.0.16",
+    "pino-pretty": "^8.1.0",
+    "prettier": "^2.7.0",
+    "prisma": "^4.0.0",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.0.0",
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.3",
+    "express": "^4.18.1",
+    "express-pino-logger": "^7.0.0",
+    "helmet": "^5.1.0",
+    "http-errors": "^2.0.0",
+    "pino": "^8.1.0"
+  }
+}
