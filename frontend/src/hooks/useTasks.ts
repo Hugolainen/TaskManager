@@ -54,7 +54,7 @@ export const useUpdateTask = (id: string) => {
 export const useDeleteTask = (id: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => axios.delete(`/tasks/${id}`),
+    mutationFn: () => apiClient.delete(`/tasks/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },

@@ -9,7 +9,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 export const TaskCalendar = ({ taskType }: { taskType: TaskType }) => {
   const [activeDay, setActiveDay] = React.useState<Date>(new Date());
-  const [dateRange1, setDateRange] = React.useState<number>(3);
+  const [dateRange1, setDateRange] = React.useState<number>(2);
 
   const dateRange = useMemo(() => {
     const dateList: Date[] = [];

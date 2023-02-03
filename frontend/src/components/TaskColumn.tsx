@@ -16,17 +16,16 @@ interface IProps {
 }
 
 export const TaskColumn = ({ taskType, day }: IProps) => {
-  const { isLoading, isError, data, error } = useTaskSearch({ taskType, taskStatus: 'none', date: day });
+  const { isLoading, isError, data = [], error } = useTaskSearch({ taskType, taskStatus: 'none', date: day });
 
-  const tasks = useMemo(() => {
+  const tasks: ITask[] = useMemo(() => {
     if (isError)
       return [
-        { id: '1', type: 'none', name: 'this is header', description: 'this is description', deadline: new Date() },
-        { id: '2', type: 'none', name: 'this is header', description: 'this is description', deadline: new Date() },
-        { id: '3', type: 'none', name: 'this is header', description: 'this is description', deadline: new Date() },
-        { id: '4', type: 'none', name: 'this is header', description: 'this is description', deadline: new Date() },
-        { id: '5', type: 'none', name: 'this is header', description: 'this is description', deadline: new Date() },
-        { id: '5', type: 'none', name: 'this is header', description: 'this is description', deadline: new Date() },
+        { id: '1', type: 'none', title: loremIpsumTitle, description: loremIpsumDesc, date: new Date() },
+        { id: '2', type: 'none', title: loremIpsumTitle, description: loremIpsumDesc, date: new Date() },
+        { id: '3', type: 'none', title: loremIpsumTitle, description: loremIpsumDesc, date: new Date() },
+        { id: '4', type: 'none', title: loremIpsumTitle, description: loremIpsumDesc, date: new Date() },
+        { id: '5', type: 'none', title: loremIpsumTitle, description: loremIpsumDesc, date: new Date() },
       ];
     return data;
   }, [isError]);
@@ -39,28 +38,34 @@ export const TaskColumn = ({ taskType, day }: IProps) => {
         </Typography>
       </TaskColumnHeader>
       <TaskListContainer>
-        {isLoading ? <Spinner /> : tasks?.map((task) => <Task key={task.id} task={task} />)}{' '}
+        {isLoading ? <Spinner /> : tasks?.map((task) => <Task key={task.id} task={task} />)}
       </TaskListContainer>
     </TaskColumnContainer>
   );
 };
 
+const loremIpsumDesc =
+  'Cupcake ipsum dolor sit amet cake jelly sesame snaps donut. Candy canes jelly macaroon pie topping. Apple pie cake liquorice bonbon chocolate cake chocolate tart. Cheesecake bonbon bonbon jelly beans pie pie oat cake marzipan croissant. Donut powder wafer cotton candy jelly-o candy chocolate bar candy. Lollipop tart fruitcake donut pastry carrot cake macaroon pudding. Halvah gummi bears marshmallow gingerbread icing topping.';
+
+const loremIpsumTitle = 'Cupcake ipsum dolor sit amet cake jelly sesame snaps donut.';
+
 const TaskColumnContainer = styled(Box)`
-  width: 30%;
+  width: 44%;
   max-height: 750px;
-  overflow-y: auto;
+  overflow-y: scroll;
 `;
 
 const TaskColumnHeader = styled(Box)`
   background-color: cyan;
   padding: 5px;
   text-align: center;
+  margin-bottom: 5px;
 `;
 
 const TaskListContainer = styled(Box)`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 
-  padding: 5px;
+  padding: 10px;
 `;
