@@ -8,6 +8,8 @@ yarn run start:dev
 
 NOTE: DB password is "admin"
 
+npx prisma generate
+
 ## Dependencies
 
 - Prisma (ORM)

@@ -1,8 +1,11 @@
 import express from 'express';
 import { logger } from '../utils/logger';
-import userRoutes from './users.router';
-
 import createError from 'http-errors';
+
+import userRoutes from './users.router';
+import taskRoutes from './tasks.router';
+import taskNoteRoutes from './taskNotes.router';
+import taskDriverRoutes from './taskDrivers.router';
 
 const routes = express.Router();
 
@@ -17,5 +20,8 @@ routes.get('/', (req, res) => {
   }
 });
 routes.use('/users', userRoutes);
+routes.use('/tasks', taskRoutes);
+routes.use('/taskNotes', taskNoteRoutes);
+routes.use('/taskDrivers', taskDriverRoutes);
 
 export = routes;

@@ -1,13 +1,3 @@
-import { User } from '@prisma/client';
+import { Task } from '@prisma/client';
 
-export type UserCreateForm = Omit<User, 'userId' | 'status'>;
-
-export type UserUpdateForm = Omit<
-  UserCreateForm,
-  'serviceProviderId' | 'type' | 'password'
->;
-
-export interface UserUpdatePassword {
-  currentPassword: string;
-  newPassword: string;
-}
+export type TaskCreateUpdateForm = Omit<Task, 'taskId' | 'status'>;

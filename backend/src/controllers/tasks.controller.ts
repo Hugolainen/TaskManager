@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { generateError, handleCatchError } from '../utils/errorUtils';
 import { logger } from '../utils/logger';
-import { User } from '@prisma/client';
-import { usersDb } from '../db';
+import { Task } from '@prisma/client';
+import { tasksDb } from '../db';
 
 enum SortingOrder {
   ASCENDING,
@@ -19,36 +19,36 @@ interface IPagination {
   pageNumber: number;
 }
 
-const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
+const getAllTasks = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // filters?: string[],
     // sorters?: ISorter[],
     // pagination?: IPagination
-    const users: User[] = await usersDb.getUsers();
+    const tasks: Task[] = await tasksDb.getTasks();
 
-    if (!users) {
-      generateError(404, 'No user found');
+    if (!tasks) {
+      generateError(404, 'No task found');
     }
 
-    logger.info('Fetched user: ', users.map((user) => user.userId).toString());
-    res.send(users);
+    logger.info('Fetched task: ', tasks.map((task) => task.taskId).toString());
+    res.send(tasks);
     next();
   } catch (e) {
     handleCatchError(e);
   }
 };
 
-const getUser = async (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.params.userId;
+const getTask = async (req: Request, res: Response, next: NextFunction) => {
+  const taskId = req.params.taskId;
   try {
-    const user = await usersDb.getUserById(userId);
+    const task = await tasksDb.getTaskById(taskId);
 
-    if (!user) {
-      return generateError(404, 'User does not exist');
+    if (!task) {
+      return generateError(404, 'Task does not exist');
     }
 
-    logger.info('Fetched user: ', user.userId);
-    res.send(user);
+    logger.info('Fetched task: ', task.taskId);
+    res.send(task);
     next();
   } catch (e) {
     handleCatchError(e);
@@ -56,17 +56,17 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 /**
- * Post User
+ * Post Task
  * @param req
  * @param res
  * @param next
  */
-const postUser = async (req: Request, res: Response, next: NextFunction) => {
-  const formUser = req.body;
+const postTask = async (req: Request, res: Response, next: NextFunction) => {
+  const formTask = req.body;
   try {
-    const user = await usersDb.createUser(formUser);
-    logger.info('Created new user: ', user);
-    res.send(user);
+    const task = await tasksDb.createTask(formTask);
+    logger.info('Created new task: ', task);
+    res.send(task);
     next();
   } catch (e) {
     handleCatchError(e);
@@ -74,17 +74,23 @@ const postUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 /**
- * Put User
+ * Put Task
  * @param req
  * @param res
  * @param next
  */
-const putUser = async (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.params.userId;
-  const formUser = req.body;
+const putTask = async (req: Request, res: Response, next: NextFunction) => {
+  const taskId = req.params.taskId;
+  const formTask = req.body;
   try {
-    const user = await usersDb.updateUser(userId, formUser);
-    logger.info('Updated user: ', user);
+    const task = await tasksDb.getTaskById(taskId);
+
+    if (!task) {
+      return generateError(404, 'Task does not exist');
+    }
+
+    const updatedTask = await tasksDb.updateTask(taskId, formTask);
+    logger.info('Updated task: ', updatedTask);
     res.sendStatus(201);
     next();
   } catch (e) {
@@ -93,47 +99,16 @@ const putUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 /**
- * Put User password
+ * Delete Task
  * @param req
  * @param res
  * @param next
  */
-const putUserPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const deleteTask = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.params.userId;
-    const formUserPassword = req.body;
-    const user = await usersDb.getUserById(userId);
-    if (!user) {
-      return generateError(404, 'User does not exist');
-    }
-    if (user.password !== formUserPassword.currentPassword) {
-      return generateError(401, 'User password does not match');
-    }
-
-    await usersDb.updateUser(userId, formUserPassword.newPassword);
-    logger.info(`Updated user password: ${userId}`);
-    res.sendStatus(201);
-    next();
-  } catch (e) {
-    handleCatchError(e);
-  }
-};
-
-/**
- * Delete User
- * @param req
- * @param res
- * @param next
- */
-const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const userId = req.params.userId;
-    await usersDb.deleteUser(userId);
-    logger.info('Deleted user: ', userId);
+    const taskId = req.params.taskId;
+    await tasksDb.deleteTask(taskId);
+    logger.info('Deleted task: ', taskId);
     res.send(200); // Todo
     next();
   } catch (e) {
@@ -142,10 +117,9 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export default {
-  getAllUsers,
-  getUser,
-  postUser,
-  putUser,
-  putUserPassword,
-  deleteUser
+  getAllTasks,
+  getTask,
+  postTask,
+  putTask,
+  deleteTask
 };

@@ -28,7 +28,8 @@ model User {
   password          String
   type              UserType
   status            UserStatus
-  tasks             Task[]
+  tasks             TaskDriver[]
+  taskNote          TaskNote[]
 }
 
 enum TaskType {
@@ -50,8 +51,26 @@ model Task {
   title          String
   date           DateTime
   description    String
-  driveNote      String?
-  status         TaskStatus
-  user           User            @relation(fields: [userId], references: [userId])
-  userId         String
+  notes          TaskNote[]
+  drivers        TaskDriver[]  
+  status         TaskStatus      
+}
+
+model TaskNote {
+  taskNoteId    String            @id @default(uuid())
+  content       String
+  date          DateTime
+  user          User @relation(fields: [userId], references: [userId])    
+  userId        String
+  task          Task @relation(fields: [taskId], references: [taskId])    
+  taskId        String
+}
+
+model TaskDriver {
+  taskDriverId  String            @id @default(uuid())
+  date          DateTime
+  user          User @relation(fields: [userId], references: [userId])    
+  userId        String
+  task          Task @relation(fields: [taskId], references: [taskId])    
+  taskId        String
 }

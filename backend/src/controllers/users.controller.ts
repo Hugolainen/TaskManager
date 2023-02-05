@@ -4,26 +4,8 @@ import { logger } from '../utils/logger';
 import { User } from '@prisma/client';
 import { usersDb } from '../db';
 
-enum SortingOrder {
-  ASCENDING,
-  DESCENDING
-}
-
-interface ISorter {
-  field: string;
-  order: SortingOrder;
-}
-
-interface IPagination {
-  quantityPerPage: number;
-  pageNumber: number;
-}
-
 const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // filters?: string[],
-    // sorters?: ISorter[],
-    // pagination?: IPagination
     const users: User[] = await usersDb.getUsers();
 
     if (!users) {
