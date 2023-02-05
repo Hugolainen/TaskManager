@@ -10,6 +10,8 @@ NOTE: DB password is "admin"
 
 npx prisma generate
 
+npx prisma migrate dev
+
 ## Dependencies
 
 - Prisma (ORM)

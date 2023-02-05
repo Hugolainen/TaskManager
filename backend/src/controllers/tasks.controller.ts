@@ -21,9 +21,6 @@ interface IPagination {
 
 const getAllTasks = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // filters?: string[],
-    // sorters?: ISorter[],
-    // pagination?: IPagination
     const tasks: Task[] = await tasksDb.getTasks();
 
     if (!tasks) {
@@ -31,6 +28,30 @@ const getAllTasks = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     logger.info('Fetched task: ', tasks.map((task) => task.taskId).toString());
+    res.send(tasks);
+    next();
+  } catch (e) {
+    handleCatchError(e);
+  }
+};
+
+const getFilteredTasks = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const filters = req.body;
+  try {
+    const tasks: Task[] = await tasksDb.getTasks(filters);
+
+    if (!tasks) {
+      generateError(404, 'No task found');
+    }
+
+    logger.info(
+      'Fetched filtered task: ',
+      tasks.map((task) => task.taskId).toString()
+    );
     res.send(tasks);
     next();
   } catch (e) {
@@ -118,6 +139,7 @@ const deleteTask = async (req: Request, res: Response, next: NextFunction) => {
 
 export default {
   getAllTasks,
+  getFilteredTasks,
   getTask,
   postTask,
   putTask,

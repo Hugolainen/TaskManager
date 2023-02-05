@@ -8,50 +8,57 @@ const loremIpsumDesc =
 const loremIpsumTitle =
   'Cupcake ipsum dolor sit amet cake jelly sesame snaps donut.';
 
-export const populateDb = () => {
-  usersDb.createUser({
-    username: 'supervisor',
-    password: 'supervisor',
-    type: UserType.supervisor
-  });
-  usersDb.createUser({
-    username: 'driver',
-    password: 'driver',
-    type: UserType.driver
-  });
+const users = usersDb.getUsers();
+users.then((users) => {
+  const supervisor = users.find((user) => user.username === 'supervisor');
+  const driver = users.find((user) => user.username === 'driver');
+  if (!supervisor) {
+    usersDb.createUser({
+      username: 'supervisor',
+      password: 'supervisor',
+      type: UserType.supervisor
+    });
+  }
+  if (!driver) {
+    usersDb.createUser({
+      username: 'driver',
+      password: 'driver',
+      type: UserType.driver
+    });
+  }
+});
 
-  tasksDb.createTask({
-    date: new Date(),
-    type: TaskType.trash,
-    title: loremIpsumTitle,
-    description: loremIpsumDesc
-  });
+tasksDb.createTask({
+  date: new Date(),
+  type: TaskType.trash,
+  title: loremIpsumTitle,
+  description: loremIpsumDesc
+});
 
-  tasksDb.createTask({
-    date: new Date(),
-    type: TaskType.trash,
-    title: loremIpsumTitle,
-    description: loremIpsumDesc
-  });
+tasksDb.createTask({
+  date: new Date(),
+  type: TaskType.trash,
+  title: loremIpsumTitle,
+  description: loremIpsumDesc
+});
 
-  tasksDb.createTask({
-    date: new Date(),
-    type: TaskType.trash,
-    title: loremIpsumTitle,
-    description: loremIpsumDesc
-  });
+tasksDb.createTask({
+  date: new Date(),
+  type: TaskType.trash,
+  title: loremIpsumTitle,
+  description: loremIpsumDesc
+});
 
-  tasksDb.createTask({
-    date: addDays(new Date(), 1),
-    type: TaskType.trash,
-    title: loremIpsumTitle,
-    description: loremIpsumDesc
-  });
+tasksDb.createTask({
+  date: addDays(new Date(), 1),
+  type: TaskType.trash,
+  title: loremIpsumTitle,
+  description: loremIpsumDesc
+});
 
-  tasksDb.createTask({
-    date: addDays(new Date(), 1),
-    type: TaskType.trash,
-    title: loremIpsumTitle,
-    description: loremIpsumDesc
-  });
-};
+tasksDb.createTask({
+  date: addDays(new Date(), 1),
+  type: TaskType.trash,
+  title: loremIpsumTitle,
+  description: loremIpsumDesc
+});

@@ -50,7 +50,7 @@ model Task {
   type           TaskType
   title          String
   date           DateTime
-  description    String
+  description    String            @db.VarChar(2000)
   notes          TaskNote[]
   drivers        TaskDriver[]  
   status         TaskStatus      
@@ -58,7 +58,7 @@ model Task {
 
 model TaskNote {
   taskNoteId    String            @id @default(uuid())
-  content       String
+  content       String            @db.VarChar(500)
   date          DateTime
   user          User @relation(fields: [userId], references: [userId])    
   userId        String

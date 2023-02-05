@@ -1,24 +1,19 @@
-import { TaskDriver } from '@prisma/client';
 import { prisma } from '../app';
 import { TaskDriverCreateUpdateForm } from '../types/taskDrivers';
 
-const getTaskDrivers = async (): Promise<TaskDriver[]> => {
+const getTaskDrivers = async () => {
   const result = await prisma.taskDriver.findMany();
   return result;
 };
 
-const getTaskDriverById = async (
-  taskDriverId: string
-): Promise<TaskDriver | null> => {
+const getTaskDriverById = async (taskDriverId: string) => {
   const result = await prisma.taskDriver.findUnique({
     where: { taskDriverId: taskDriverId }
   });
   return result;
 };
 
-const createTaskDriver = async (
-  taskDriver: TaskDriverCreateUpdateForm
-): Promise<TaskDriver> => {
+const createTaskDriver = async (taskDriver: TaskDriverCreateUpdateForm) => {
   const result = await prisma.taskDriver.create({
     data: {
       ...taskDriver,
@@ -31,7 +26,7 @@ const createTaskDriver = async (
 const updateTaskDriver = async (
   taskDriverId: string,
   taskDriver: TaskDriverCreateUpdateForm
-): Promise<TaskDriver> => {
+) => {
   const result = await prisma.taskDriver.update({
     where: { taskDriverId: taskDriverId },
     data: {
@@ -41,7 +36,7 @@ const updateTaskDriver = async (
   return result;
 };
 
-const deleteTaskDriver = async (taskDriverId: string): Promise<boolean> => {
+const deleteTaskDriver = async (taskDriverId: string) => {
   await prisma.taskDriver.delete({
     where: { taskDriverId: taskDriverId }
   });
