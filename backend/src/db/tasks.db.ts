@@ -3,17 +3,15 @@ import { addDays } from 'date-fns';
 import { prisma } from '../app';
 import { TaskCreateUpdateForm, TaskFilters } from '../types/tasks';
 import { resetTime } from '../utils/dateUtils';
-import { logger } from '../utils/logger';
 
 const getTasks = async (filters?: TaskFilters) => {
   const dateFilter = filters?.date
     ? {
-        gte: new Date(resetTime(new Date(filters.date))),
-        lt: new Date(resetTime(addDays(new Date(filters.date), 1)))
+        gte: resetTime(new Date(filters.date)),
+        lt: resetTime(addDays(new Date(filters.date), 1))
       }
     : undefined;
 
-  logger.info('test' + dateFilter?.lt);
   const result = await prisma.task.findMany({
     where: {
       date: dateFilter

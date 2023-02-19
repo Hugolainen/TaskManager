@@ -42,7 +42,7 @@ enum TaskStatus {
   pending
   active
   done
-  archived
+  billed
 }
 
 model Task {

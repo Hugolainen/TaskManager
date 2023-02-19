@@ -24,16 +24,20 @@ export function useTaskSearch(searchParams: ISearchTaskQuery) {
   );
 }
 
-export function useGetTaskById(taskId: string) {
-  return useQuery<ITask>(['task', taskId], async () => {
-    const { data } = await apiClient.get(`/tasks/${taskId}`);
-    return data;
-  });
+export function useGetTaskById(taskId?: string) {
+  return useQuery<ITask>(
+    ['task', taskId],
+    async () => {
+      const { data } = await apiClient.get(`/tasks/${taskId}`);
+      return data;
+    },
+    { enabled: !!taskId },
+  );
 }
 
 export const useAddTask = () => {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation<ITask>({
     mutationFn: (newTask) => apiClient.post('/tasks', newTask),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
@@ -41,10 +45,10 @@ export const useAddTask = () => {
   });
 };
 
-export const useUpdateTask = (id: string) => {
+export const useUpdateTask = (taskId?: string) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (updatedTask) => apiClient.put(`/tasks/${id}`, updatedTask),
+  return useMutation<ITask>({
+    mutationFn: (updatedTask) => apiClient.put(`/tasks/${taskId}`, updatedTask),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
