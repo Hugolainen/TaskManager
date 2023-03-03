@@ -1,0 +1,26 @@
+services:
+  app:
+    image: node:18-alpine
+    command: sh -c "yarn install && yarn run start:dev"
+    ports:
+      - 3000:3000
+    working_dir: /app
+    volumes:
+      - ./:/app
+  #    environment:
+  #      MYSQL_USER: root
+  #      MYSQL_PASSWORD: taskManager_secret
+  #      MYSQL_DB: taskmanager
+
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - taskManager-mysql-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: taskManager_secret
+      MYSQL_DATABASE: taskmanager
+
+volumes:
+  taskManager-mysql-data:
