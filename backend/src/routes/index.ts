@@ -2,6 +2,7 @@ import express from 'express';
 import { logger } from '../utils/logger';
 import createError from 'http-errors';
 
+import authRoutes from './auth.router';
 import userRoutes from './users.router';
 import taskRoutes from './tasks.router';
 import taskNoteRoutes from './taskNotes.router';
@@ -19,6 +20,7 @@ routes.get('/', (req, res) => {
     throw httpError;
   }
 });
+routes.use('/auth', authRoutes);
 routes.use('/users', userRoutes);
 routes.use('/tasks', taskRoutes);
 routes.use('/taskNotes', taskNoteRoutes);

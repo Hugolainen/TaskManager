@@ -12,6 +12,18 @@ import helmet from 'helmet';
 // DB connection
 export const prisma = new PrismaClient();
 
+// TODO: Add Jwt env variable check
+// const start = async () => {
+//     try {
+//       if(!process.env.JWT_KEY){
+//         throw new Error('JWT_KEY must be defined')
+//       }
+//       //Connect to database or ...
+//     } catch (error) {
+//       console.log(error)
+//     }
+//   }
+
 const app = express();
 const port = 3000;
 app.use(cors());

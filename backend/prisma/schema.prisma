@@ -26,10 +26,23 @@ model User {
   userId            String          @id @default(uuid())
   username          String          @unique
   password          String
+  refreshTokens     RefreshToken[]
   type              UserType
   status            UserStatus
   tasks             TaskDriver[]
   taskNote          TaskNote[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model RefreshToken {
+  id          String   @id @unique @default(uuid())
+  hashedToken String
+  userId      String
+  User        User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 enum TaskType {
@@ -46,31 +59,37 @@ enum TaskStatus {
 }
 
 model Task {
-  taskId         String            @id @default(uuid())
+  taskId         String           @id @default(uuid())
   type           TaskType
-  title          String
+  title          String           @db.Text
   date           DateTime
-  description    String            @db.VarChar(2000)
+  description    String           @db.LongText
   notes          TaskNote[]
   drivers        TaskDriver[]  
-  status         TaskStatus      
+  status         TaskStatus  
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt    
 }
 
 model TaskNote {
-  taskNoteId    String            @id @default(uuid())
-  content       String            @db.VarChar(500)
+  taskNoteId    String          @id @default(uuid())
+  content       String          @db.MediumText
   date          DateTime
   user          User @relation(fields: [userId], references: [userId])    
   userId        String
   task          Task @relation(fields: [taskId], references: [taskId])    
   taskId        String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 }
 
 model TaskDriver {
-  taskDriverId  String            @id @default(uuid())
+  taskDriverId  String          @id @default(uuid())
   date          DateTime
   user          User @relation(fields: [userId], references: [userId])    
   userId        String
   task          Task @relation(fields: [taskId], references: [taskId])    
   taskId        String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 }
