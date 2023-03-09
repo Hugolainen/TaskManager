@@ -23,7 +23,7 @@ enum UserStatus {
 }
 
 model User {
-  userId            String          @id @default(uuid())
+  userId            String          @id @unique @default(uuid())
   username          String          @unique
   password          String
   refreshTokens     RefreshToken[]
@@ -36,13 +36,13 @@ model User {
 }
 
 model RefreshToken {
-  id          String   @id @unique @default(uuid())
-  hashedToken String
-  userId      String
-  User        User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  revoked     Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  refreshTokenId  String    @id @unique @default(uuid())
+  hashedToken     String
+  userId          String
+  User            User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  revoked         Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 enum TaskType {
@@ -59,7 +59,7 @@ enum TaskStatus {
 }
 
 model Task {
-  taskId         String           @id @default(uuid())
+  taskId         String           @id @unique @default(uuid())
   type           TaskType
   title          String           @db.Text
   date           DateTime
@@ -72,7 +72,7 @@ model Task {
 }
 
 model TaskNote {
-  taskNoteId    String          @id @default(uuid())
+  taskNoteId    String          @id @unique @default(uuid())
   content       String          @db.MediumText
   date          DateTime
   user          User @relation(fields: [userId], references: [userId])    
@@ -84,7 +84,7 @@ model TaskNote {
 }
 
 model TaskDriver {
-  taskDriverId  String          @id @default(uuid())
+  taskDriverId  String          @id @unique @default(uuid())
   date          DateTime
   user          User @relation(fields: [userId], references: [userId])    
   userId        String

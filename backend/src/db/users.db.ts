@@ -1,10 +1,24 @@
 import { UserStatus } from '@prisma/client';
 import { prisma } from '../app';
 import { UserCreateForm, UserUpdateForm } from '../types/users';
+import bcrypt from 'bcrypt';
+
+// Exclude keys from user
+export function exclude<User, Key extends keyof User>(
+  user: User,
+  keys: Key[]
+): Omit<User, Key> {
+  for (const key of keys) {
+    delete user[key];
+  }
+  return user;
+}
 
 const getUsers = async () => {
   const result = await prisma.user.findMany();
-  return result;
+  return result.map((user) =>
+    exclude(user, ['password', 'createdAt', 'updatedAt'])
+  );
 };
 
 const getUserById = async (userId: string) => {
@@ -12,14 +26,28 @@ const getUserById = async (userId: string) => {
   return result;
 };
 
+const getUserByUsername = async (username: string) => {
+  const result = await prisma.user.findUnique({
+    where: { username: username }
+  });
+  return result;
+};
+
 const createUser = async (user: UserCreateForm) => {
   const result = await prisma.user.create({
     data: {
       ...user,
+      password: bcrypt.hashSync(user.password, 12),
       status: UserStatus.pending
     }
   });
-  return result;
+  return exclude(result, [
+    'password',
+    'createdAt',
+    'updatedAt',
+    'createdAt',
+    'updatedAt'
+  ]);
 };
 
 const updateUser = async (userId: string, user: UserUpdateForm) => {
@@ -29,7 +57,17 @@ const updateUser = async (userId: string, user: UserUpdateForm) => {
       ...user
     }
   });
-  return result;
+  return exclude(result, ['password', 'createdAt', 'updatedAt']);
+};
+
+const updateUserPassword = async (userId: string, password: string) => {
+  await prisma.user.update({
+    where: { userId: userId },
+    data: {
+      password: bcrypt.hashSync(password, 12)
+    }
+  });
+  return true;
 };
 
 const deleteUser = async (userId: string) => {
@@ -39,4 +77,12 @@ const deleteUser = async (userId: string) => {
   return true;
 };
 
-export default { getUsers, getUserById, createUser, updateUser, deleteUser };
+export default {
+  getUsers,
+  getUserById,
+  getUserByUsername,
+  createUser,
+  updateUser,
+  updateUserPassword,
+  deleteUser
+};

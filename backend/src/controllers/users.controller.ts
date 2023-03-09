@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { generateError, handleCatchError } from '../utils/errorUtils';
 import { logger } from '../utils/logger';
-import { User } from '@prisma/client';
 import { usersDb } from '../db';
+import { exclude } from '../db/users.db';
 
 const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const users: User[] = await usersDb.getUsers();
+    const users = await usersDb.getUsers();
 
     if (!users) {
       generateError(404, 'No user found');
@@ -17,10 +17,11 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
-const getUser = async (req: Request, res: Response, next: NextFunction) => {
+const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   const userId = req.params.userId;
   try {
     const user = await usersDb.getUserById(userId);
@@ -30,10 +31,13 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     logger.info('Fetched user: ', user.userId);
-    res.send(user);
+
+    const cleanUser = exclude(user, ['password', 'createdAt', 'updatedAt']);
+    res.send(cleanUser);
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -52,6 +56,7 @@ const postUser = async (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -71,6 +76,7 @@ const putUser = async (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -102,6 +108,7 @@ const putUserPassword = async (
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -120,12 +127,13 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
 export default {
   getAllUsers,
-  getUser,
+  getUserById,
   postUser,
   putUser,
   putUserPassword,

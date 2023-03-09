@@ -24,6 +24,7 @@ const getAllTaskNotes = async (
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -41,6 +42,7 @@ const getTaskNote = async (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -63,6 +65,7 @@ const postTaskNote = async (
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -85,6 +88,7 @@ const putTaskNote = async (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -107,6 +111,7 @@ const deleteTaskNote = async (
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 

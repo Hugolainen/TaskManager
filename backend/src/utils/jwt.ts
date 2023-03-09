@@ -36,7 +36,7 @@ function generateTokens(user: User, jti: jwt.Secret) {
   };
 }
 
-module.exports = {
+export default {
   generateAccessToken,
   generateRefreshToken,
   generateTokens

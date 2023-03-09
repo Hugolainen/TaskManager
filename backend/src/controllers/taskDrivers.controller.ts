@@ -24,6 +24,7 @@ const getAllTaskDrivers = async (
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -45,6 +46,7 @@ const getTaskDriver = async (
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -67,6 +69,7 @@ const postTaskDriver = async (
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -93,6 +96,7 @@ const putTaskDriver = async (
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -115,6 +119,7 @@ const deleteTaskDriver = async (
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 

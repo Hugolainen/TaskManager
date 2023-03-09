@@ -32,6 +32,7 @@ const getAllTasks = async (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -56,6 +57,7 @@ const getFilteredTasks = async (
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -73,6 +75,7 @@ const getTask = async (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -91,6 +94,7 @@ const postTask = async (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -116,6 +120,7 @@ const putTask = async (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
@@ -134,6 +139,7 @@ const deleteTask = async (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (e) {
     handleCatchError(e);
+    next();
   }
 };
 
