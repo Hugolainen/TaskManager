@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { generateError, handleCatchError } from '../utils/errorUtils';
 import { logger } from '../utils/logger';
-import { User } from '@prisma/client';
 import { authDb, usersDb } from '../db';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
-import jwt from '../utils/jwt';
+import jwtUtils from '../utils/jwt';
+import jwt from 'jsonwebtoken';
+import { hashToken } from '../utils/hashToken';
 
-const authLogin = async (req: Request, res: Response, next: NextFunction) => {
+const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -26,7 +27,7 @@ const authLogin = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const jti = uuidv4();
-    const { accessToken, refreshToken } = jwt.generateTokens(user, jti);
+    const { accessToken, refreshToken } = jwtUtils.generateTokens(user, jti);
     await authDb.createRefreshToken({
       jti,
       refreshToken,
@@ -43,7 +44,74 @@ const authLogin = async (req: Request, res: Response, next: NextFunction) => {
       accessToken,
       refreshToken
     });
+  } catch (e) {
+    handleCatchError(e);
     next();
+  }
+};
+
+const refreshToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { refreshToken, userId } = req.body;
+    if (!refreshToken) {
+      return generateError(400, 'Missing refresh token');
+    }
+    const payloadToken = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET as string
+    );
+    const savedRefreshToken = await authDb.getRefreshTokenById(
+      payloadToken as string
+    );
+
+    if (!savedRefreshToken || savedRefreshToken.revoked === true) {
+      return generateError(401, 'Unauthorized');
+    }
+
+    const hashedToken = hashToken(refreshToken);
+    if (hashedToken !== savedRefreshToken.hashedToken) {
+      return generateError(401, 'Unauthorized');
+    }
+
+    const user = await usersDb.getUserById(userId);
+    if (!user) {
+      return generateError(401, 'Unauthorized');
+    }
+
+    await authDb.deleteRefreshToken(savedRefreshToken.id);
+    const jti = uuidv4();
+    const { accessToken, refreshToken: newRefreshToken } =
+      jwtUtils.generateTokens(user, jti);
+    await authDb.createRefreshToken({
+      jti,
+      refreshToken: newRefreshToken,
+      userId: user.userId
+    });
+    logger.info(`Refreshed token #${newRefreshToken} for user id #${userId}`);
+    res.send({
+      accessToken,
+      refreshToken: newRefreshToken
+    });
+  } catch (e) {
+    handleCatchError(e);
+    next();
+  }
+};
+
+const revokeRefreshToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { userId } = req.body;
+    await authDb.revokeUserRefreshTokens(userId);
+    logger.info(`Tokens revoked for user with id #${userId}`);
+    res.send({ message: `Tokens revoked for user with id #${userId}` });
   } catch (e) {
     handleCatchError(e);
     next();
@@ -51,5 +119,7 @@ const authLogin = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export default {
-  authLogin
+  login,
+  refreshToken,
+  revokeRefreshToken
 };

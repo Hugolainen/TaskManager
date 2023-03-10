@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { generateError, handleCatchError } from '../utils/errorUtils';
 import { logger } from '../utils/logger';
-import { usersDb } from '../db';
+import { authDb, usersDb } from '../db';
 import { exclude } from '../db/users.db';
 
 const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -103,6 +103,7 @@ const putUserPassword = async (
     }
 
     await usersDb.updateUser(userId, formUserPassword.newPassword);
+    await authDb.revokeUserRefreshTokens(userId);
     logger.info(`Updated user password: ${userId}`);
     res.sendStatus(201);
     next();
@@ -122,6 +123,7 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.params.userId;
     await usersDb.deleteUser(userId);
+    await authDb.revokeUserRefreshTokens(userId);
     logger.info('Deleted user: ', userId);
     res.send(200); // Todo
     next();
