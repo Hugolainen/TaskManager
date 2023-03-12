@@ -1,6 +1,9 @@
-import { TaskType, UserType } from '@prisma/client';
+import { TaskStatus, TaskType, UserStatus, UserType } from '@prisma/client';
 import { addDays } from 'date-fns';
-import { usersDb, tasksDb } from '../src/db';
+import { PrismaClient } from '@prisma/client';
+import { logger } from '../src/utils/logger';
+import { handleCatchError } from '../src/utils/errorUtils';
+const prisma = new PrismaClient();
 
 //https://www.prisma.io/docs/guides/database/seed-database
 
@@ -10,57 +13,78 @@ const loremIpsumDesc =
 const loremIpsumTitle =
   'Cupcake ipsum dolor sit amet cake jelly sesame snaps donut.';
 
-const users = usersDb.getUsers();
-users.then((users) => {
-  const supervisor = users.find((user) => user.username === 'supervisor');
-  const driver = users.find((user) => user.username === 'driver');
-  if (!supervisor) {
-    usersDb.createUser({
+async function main() {
+  await prisma.user.upsert({
+    where: { username: 'supervisor' },
+    update: {},
+    create: {
       username: 'supervisor',
       password: 'supervisor',
-      type: UserType.supervisor
-    });
-  }
-  if (!driver) {
-    usersDb.createUser({
+      type: UserType.supervisor,
+      status: UserStatus.active
+    }
+  });
+
+  await prisma.user.upsert({
+    where: { username: 'supervisor' },
+    update: {},
+    create: {
       username: 'driver',
       password: 'driver',
-      type: UserType.driver
-    });
-  }
-});
+      type: UserType.driver,
+      status: UserStatus.active
+    }
+  });
 
-tasksDb.createTask({
-  date: new Date(),
-  type: TaskType.trash,
-  title: loremIpsumTitle,
-  description: loremIpsumDesc
-});
+  await prisma.task.createMany({
+    data: [
+      {
+        date: new Date(),
+        type: TaskType.trash,
+        title: loremIpsumTitle,
+        description: loremIpsumDesc,
+        status: TaskStatus.pending
+      },
+      {
+        date: new Date(),
+        type: TaskType.trash,
+        title: loremIpsumTitle,
+        description: loremIpsumDesc,
+        status: TaskStatus.pending
+      },
+      {
+        date: new Date(),
+        type: TaskType.trash,
+        title: loremIpsumTitle,
+        description: loremIpsumDesc,
+        status: TaskStatus.pending
+      },
+      {
+        date: addDays(new Date(), 1),
+        type: TaskType.trash,
+        title: loremIpsumTitle,
+        description: loremIpsumDesc,
+        status: TaskStatus.pending
+      },
+      {
+        date: addDays(new Date(), 1),
+        type: TaskType.trash,
+        title: loremIpsumTitle,
+        description: loremIpsumDesc,
+        status: TaskStatus.pending
+      }
+    ]
+  });
 
-tasksDb.createTask({
-  date: new Date(),
-  type: TaskType.trash,
-  title: loremIpsumTitle,
-  description: loremIpsumDesc
-});
+  logger.info('Succesfully seeded DB');
+}
 
-tasksDb.createTask({
-  date: new Date(),
-  type: TaskType.trash,
-  title: loremIpsumTitle,
-  description: loremIpsumDesc
-});
-
-tasksDb.createTask({
-  date: addDays(new Date(), 1),
-  type: TaskType.trash,
-  title: loremIpsumTitle,
-  description: loremIpsumDesc
-});
-
-tasksDb.createTask({
-  date: addDays(new Date(), 1),
-  type: TaskType.trash,
-  title: loremIpsumTitle,
-  description: loremIpsumDesc
-});
+main()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    handleCatchError(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });

@@ -25,9 +25,6 @@ export const AddTaskMenu = ({ taskType, day }: IProps) => {
           {format(day, 'eeeeee dd MM yyyy', { locale: fi })} - Week {format(day, 'w', { locale: fi })}
         </Typography>
       </TaskColumnHeader>
-      <TaskListContainer>
-        {isLoading ? <Spinner /> : tasks?.map((task) => <Task key={task.id} task={task} />)}
-      </TaskListContainer>
     </TaskColumnContainer>
   );
 };

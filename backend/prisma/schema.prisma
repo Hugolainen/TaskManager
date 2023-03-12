@@ -11,7 +11,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserType {
+enum UserRole {
   driver
   supervisor
 }
@@ -27,7 +27,7 @@ model User {
   username          String          @unique
   password          String
   refreshTokens     RefreshToken[]
-  type              UserType
+  role              UserRole
   status            UserStatus
   tasks             TaskDriver[]
   taskNote          TaskNote[]

@@ -3,6 +3,9 @@ import { prisma } from '../app';
 import { UserCreateForm, UserUpdateForm } from '../types/users';
 import bcrypt from 'bcrypt';
 
+// Hashing
+const saltRounds = 12;
+
 // Exclude keys from user
 export function exclude<User, Key extends keyof User>(
   user: User,
@@ -37,7 +40,7 @@ const createUser = async (user: UserCreateForm) => {
   const result = await prisma.user.create({
     data: {
       ...user,
-      password: bcrypt.hashSync(user.password, 12),
+      password: bcrypt.hashSync(user.password, saltRounds),
       status: UserStatus.pending
     }
   });
@@ -64,7 +67,7 @@ const updateUserPassword = async (userId: string, password: string) => {
   await prisma.user.update({
     where: { userId: userId },
     data: {
-      password: bcrypt.hashSync(password, 12)
+      password: bcrypt.hashSync(password, saltRounds)
     }
   });
   return true;

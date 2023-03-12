@@ -21,7 +21,7 @@ export const TaskColumn = ({ taskType, day }: IProps) => {
   const tasks: ITask[] = useMemo(() => {
     if (isError)
       return [
-        { id: '1', type: 'none', title: loremIpsumTitle, description: loremIpsumDesc, date: new Date() },
+        { id: '1', type: 'none', title: loremIpsumTitle + 'err', description: loremIpsumDesc, date: new Date() },
         { id: '2', type: 'none', title: loremIpsumTitle, description: loremIpsumDesc, date: new Date() },
         { id: '3', type: 'none', title: loremIpsumTitle, description: loremIpsumDesc, date: new Date() },
         { id: '4', type: 'none', title: loremIpsumTitle, description: loremIpsumDesc, date: new Date() },

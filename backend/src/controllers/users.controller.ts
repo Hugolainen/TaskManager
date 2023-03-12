@@ -3,6 +3,7 @@ import { generateError, handleCatchError } from '../utils/errorUtils';
 import { logger } from '../utils/logger';
 import { authDb, usersDb } from '../db';
 import { exclude } from '../db/users.db';
+import bcrypt from 'bcrypt';
 
 const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -98,7 +99,11 @@ const putUserPassword = async (
     if (!user) {
       return generateError(404, 'User does not exist');
     }
-    if (user.password !== formUserPassword.currentPassword) {
+    const validPassword = await bcrypt.compare(
+      user.password,
+      formUserPassword.password
+    );
+    if (!validPassword) {
       return generateError(401, 'User password does not match');
     }
 

@@ -82,7 +82,7 @@ const refreshToken = async (
       return generateError(401, 'Unauthorized');
     }
 
-    await authDb.deleteRefreshToken(savedRefreshToken.id);
+    await authDb.deleteRefreshToken(savedRefreshToken.refreshTokenId);
     const jti = uuidv4();
     const { accessToken, refreshToken: newRefreshToken } =
       jwtUtils.generateTokens(user, jti);
