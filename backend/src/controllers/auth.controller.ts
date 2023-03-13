@@ -7,8 +7,29 @@ import { v4 as uuidv4 } from 'uuid';
 import jwtUtils from '../utils/jwt';
 import jwt from 'jsonwebtoken';
 import { hashToken } from '../utils/hashToken';
+import { validationResult } from 'express-validator';
 
-const login = async (req: Request, res: Response, next: NextFunction) => {
+interface Login {
+  username: string;
+  password: string;
+}
+
+export interface TypedRequestBody<T> extends Express.Request {
+  body: T;
+}
+
+const login = async (
+  req: TypedRequestBody<Login>,
+  res: Response,
+  next: NextFunction
+) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(200)
+      .json({ err: 'Invalid Data Passed!', errors: errors });
+  }
+
   try {
     const { username, password } = req.body;
     if (!username || !password) {

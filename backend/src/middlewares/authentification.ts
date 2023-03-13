@@ -1,15 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { generateError, handleCatchError } from '../utils/errorUtils';
 import jwt from 'jsonwebtoken';
-
-const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
-const getJwtAccessSecret = (): string => {
-  if (!JWT_ACCESS_SECRET) {
-    throw new Error("it's shit");
-  }
-
-  return JWT_ACCESS_SECRET;
-};
+import config from '../config';
 
 export function isAuthenticated(
   req: Request,
@@ -24,7 +16,7 @@ export function isAuthenticated(
 
   try {
     const token = authorization.split(' ')[1];
-    const payload = jwt.verify(token, getJwtAccessSecret());
+    const payload = jwt.verify(token, config.jwtSecret);
     req.payload = payload;
   } catch (e) {
     handleCatchError(e);

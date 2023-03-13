@@ -30,3 +30,5 @@ src
 └───services # Encapsulates all business logic
 └───test # Tests go here
 └───CRON # Tests go here
+
+// TODO: https://stackoverflow.com/questions/73536564/validate-data-using-express-validator-in-nodejs
